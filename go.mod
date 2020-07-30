@@ -1,4 +1,4 @@
-module github.com/sardap/secret-police-bot
+module github.com/sardap/voterigging
 
 go 1.14
 
