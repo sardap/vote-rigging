@@ -1,4 +1,4 @@
-package pkg
+package vote-rigging
 
 import (
 	"fmt"
