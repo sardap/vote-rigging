@@ -12,8 +12,8 @@ type voteType string
 
 const (
 	voteDown voteType = voteType("👎")
-	voteUp   voteType = voteType("👍")
-	reactB   voteType = voteType("🅱️")
+	voteUp   = voteType("👍")
+	reactB   = voteType("🅱️")
 )
 
 var (
