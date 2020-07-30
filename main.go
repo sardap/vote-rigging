@@ -23,7 +23,6 @@ var (
 
 func init() {
 	voteInfav = createWordRegex(
-		"paul", "paul sarda", "219332237424984064",
 		"734509708618235926", "735402018956378152", "734052391954939904",
 		"734731825993482312", "736822440793210890", "736621603206725723",
 		"735563866536280134", "738279974926024734",
@@ -48,7 +47,9 @@ func createWordRegex(input ...string) *regexp.Regexp {
 
 func handleMessage(s *discordgo.Session, mID, cID, uID string, message []byte) {
 	reactions := make([]voteType, 0)
-	if voteInfav.Match([]byte(uID)) {
+	if uID == "219332237424984064" {
+		reactions = append(reactions, voteUp)
+	} else if voteInfav.Match([]byte(uID)) {
 		reactions = append(reactions, voteUp)
 		reactions = append(reactions, reactB)
 	} else if voteInOp.Match([]byte(uID)) {
