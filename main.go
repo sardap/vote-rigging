@@ -49,18 +49,18 @@ func handleMessage(s *discordgo.Session, mID, cID, uID string, message []byte) {
 	reactions := make([]voteType, 0)
 	if uID == "219332237424984064" {
 		reactions = append(reactions, voteUp)
-	} else if voteInfav.Match([]byte(uID)) {
+	} else if voteInOp.Match([]byte(uID)) {
 		reactions = append(reactions, voteUp)
 		reactions = append(reactions, reactB)
-	} else if voteInOp.Match([]byte(uID)) {
+	} else if voteInfav.Match([]byte(uID)) {
 		reactions = append(reactions, voteDown)
 	}
 
 	if len(reactions) == 0 {
-		if voteInfav.Match(message) {
+		if voteInOp.Match(message) {
 			reactions = append(reactions, voteUp)
 			reactions = append(reactions, reactB)
-		} else if voteInOp.Match(message) {
+		} else if voteInfav.Match(message) {
 			reactions = append(reactions, voteDown)
 		}
 	}
