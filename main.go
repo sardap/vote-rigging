@@ -12,8 +12,8 @@ type voteType string
 
 const (
 	voteDown voteType = voteType("👎")
-	voteUp   = voteType("👍")
-	reactB   = voteType("🅱️")
+	voteUp            = voteType("👍")
+	reactB            = voteType("🅱️")
 )
 
 var (
@@ -25,7 +25,8 @@ func init() {
 	voteInfav = createWordRegex(
 		"734509708618235926", "735402018956378152", "734052391954939904",
 		"734731825993482312", "736822440793210890", "736621603206725723",
-		"735563866536280134", "738279974926024734",
+		"735563866536280134", "738279974926024734", "219332237424984064",
+		"734205649180688594",
 	)
 	voteInOp = createWordRegex(
 		"richard", "mitchell", "158496062103879681", "732423316081737839",
@@ -47,21 +48,19 @@ func createWordRegex(input ...string) *regexp.Regexp {
 
 func handleMessage(s *discordgo.Session, mID, cID, uID string, message []byte) {
 	reactions := make([]voteType, 0)
-	if uID == "219332237424984064" {
-		reactions = append(reactions, voteUp)
-	} else if voteInOp.Match([]byte(uID)) {
+	if voteInOp.Match([]byte(uID)) {
+		reactions = append(reactions, voteDown)
+	} else if voteInfav.Match([]byte(uID)) {
 		reactions = append(reactions, voteUp)
 		reactions = append(reactions, reactB)
-	} else if voteInfav.Match([]byte(uID)) {
-		reactions = append(reactions, voteDown)
 	}
 
 	if len(reactions) == 0 {
 		if voteInOp.Match(message) {
+			reactions = append(reactions, voteDown)
+		} else if voteInfav.Match(message) {
 			reactions = append(reactions, voteUp)
 			reactions = append(reactions, reactB)
-		} else if voteInfav.Match(message) {
-			reactions = append(reactions, voteDown)
 		}
 	}
 
@@ -74,6 +73,26 @@ func handleMessage(s *discordgo.Session, mID, cID, uID string, message []byte) {
 
 //VoteReactCreateMessage Attach this to your message create and message edit
 func VoteReactCreateMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if m.Author.ID == "219332237424984064" && regexp.MustCompile("vote good \\d+").Match([]byte(m.Content)) {
+		mID := strings.Split(m.Content, " ")[2]
+		reactions := make([]voteType, 0)
+		reactions = append(reactions, voteUp)
+		reactions = append(reactions, reactB)
+		for _, vote := range reactions {
+			s.MessageReactionAdd(
+				m.ChannelID, mID, string(vote),
+			)
+		}
+	} else if m.Author.ID == "219332237424984064" && regexp.MustCompile("vote bad \\d+").Match([]byte(m.Content)) {
+		mID := strings.Split(m.Content, " ")[2]
+		reactions := make([]voteType, 0)
+		reactions = append(reactions, voteDown)
+		for _, vote := range reactions {
+			s.MessageReactionAdd(
+				m.ChannelID, mID, string(vote),
+			)
+		}
+	}
 	handleMessage(s, m.ID, m.ChannelID, m.Author.ID, []byte(strings.ToLower(m.Content)))
 }
 
