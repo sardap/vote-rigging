@@ -93,10 +93,8 @@ func VoteReactCreateMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 			)
 		}
 	}
-	handleMessage(s, m.ID, m.ChannelID, m.Author.ID, []byte(strings.ToLower(m.Content)))
 }
 
 //VoteReactUpdateMessage Attach this to your message update and message edit
 func VoteReactUpdateMessage(s *discordgo.Session, m *discordgo.MessageUpdate) {
-	handleMessage(s, m.ID, m.ChannelID, m.Author.ID, []byte(strings.ToLower(m.Content)))
 }
